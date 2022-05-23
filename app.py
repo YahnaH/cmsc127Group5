@@ -4,6 +4,13 @@
 from tkinter import *       
 from functools import partial
 
+#import database
+#reference: https://www.youtube.com/watch?v=oDR7k66x-AU&t=427s&ab_channel=DiscoverPython
+import mysql.connector as mariadb
+
+#create mysql connection and define cursor
+dbConnect = mariadb.connet(user ="root", password='hilario15',host ='localhost',port ='3306')
+
 #function for user validation
 def loginUser(user,password):
     print("username: ",user.get())
