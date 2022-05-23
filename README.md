@@ -10,3 +10,7 @@ Modifications:
     ##exit
     ##login as python
     ##check if dbs can be accessed
+
+3. Connect to mysql: https://www.youtube.com/watch?v=mt-5FGkw2zY
+
+Note: no need to install anything for Tk since native naman siya sa python
