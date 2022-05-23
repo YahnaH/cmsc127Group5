@@ -9,12 +9,43 @@ from functools import partial
 import mysql.connector as mariadb
 
 #create mysql connection and define cursor
-dbConnect = mariadb.connet(user ="root", password='hilario15',host ='localhost',port ='3306')
+dbConnect = mariadb.connect(user ="python", password='dbconnector',host ='localhost',port ='3306')
+dbCursor = dbConnect.cursor()
+
+##SHOW DBS and use tasksapp
+dbCursor.execute("SHOW DATABASES")
+for x in dbCursor:
+    print(x)
+
+dbCursor.execute("USE tasksapp")
 
 #function for user validation
 def loginUser(user,password):
-    print("username: ",user.get())
-    print("password: ",password.get())
+    userName = user.get()
+    userPassword = password.get()
+    sql_stata = 'SELECT userid,userpassword FROM user WHERE userid = %s and userpassword = %s';
+    validUser = (userName,userPassword)
+    dbCursor.execute(sql_stata,validUser)
+    res = dbCursor.fetchone()
+    clear_window()
+    if res is None:
+        ##did not match any credentials
+        success(0)
+    else:
+        success(1)
+    return
+
+##function for clearing window
+def clear_window():
+        for widgets in root.winfo_children():
+            widgets.destroy()
+        return
+    
+def success(params):
+    if params == 1:
+        successLabel = Label(root,text="SUCCESS!").place(anchor= CENTER, relx =.5,rely = .2)
+    else:
+        successLabel = Label(root,text="FAILED!").place(anchor= CENTER, relx =.5,rely = .2)
     return
 
 #create window
