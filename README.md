@@ -14,3 +14,8 @@ Modifications:
 3. Connect to mysql: https://www.youtube.com/watch?v=mt-5FGkw2zY
 
 Note: no need to install anything for Tk since native naman siya sa python
+
+REFERENCE LIST:
+https://pythonguides.com/python-tkinter-multiple-windows-tutorial/
+
+https://www.geeksforgeeks.org/tkinter-application-to-switch-between-different-page-frames/
