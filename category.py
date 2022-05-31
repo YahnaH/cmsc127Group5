@@ -10,6 +10,13 @@ dbCursor = dbConnect.cursor()
 user = "sample"         #temporary user
 
 def viewOneCategory(id):
+    if id > 0:
+        b_editCategory = Button(root, text='Edit Category', font=('Arial Narrow Bold', 12), bg='#F46C3E', command=pop_editCategory)
+        b_editCategory.place(x=530, y=160)
+
+        b_delCategory = Button(root, text='Delete Category', font=('Arial Narrow Bold', 12), bg='#F46C3E', command=pop_deleteCategory)
+        b_delCategory.place(x=640, y=160)
+        
     try:
         viewOneCat = "SELECT categoryname, COALESCE(unfinishedtasks,0) FROM category WHERE userid = %s and categoryid = %s;"
 
@@ -18,7 +25,8 @@ def viewOneCategory(id):
 
         name.config(text=result[0])
 
-        unfinished = Label(root, text='Unfinished Tasks: ' + str(result[1]), font=('Arial Narrow', 12), fg='white', bg='#3D4448').place(x=800, y=300)
+        #unfinished = Label(root, text='Unfinished Tasks: ' + str(result[1]), font=('Arial Narrow', 12), fg='white', bg='#3D4448').place(x=800, y=300)
+        unfinished.config(text='Unfinished Tasks: ' + str(result[1]))
 
         print("\n------- One Category -------")
         print("Category Name:", result[0])
@@ -35,7 +43,7 @@ def viewAllCategories():
         dbCursor.execute(viewCat, (user,))
         categories = dbCursor.fetchall()
 
-        i = 150
+        i = 250
         for row in categories:
             #Radiobutton(root, text=row[1], variable=rb, value=row[0], command=lambda: viewOneCategory(rb.get()), font=('Arial Narrow Bold', 15), fg='white', bg='#292C2E', selectcolor='#292C2E', activebackground='#292C2E', activeforeground='white', pady=10).place(x=20, y=i)
             global c
@@ -136,7 +144,7 @@ def deleteCategory(ans):
             messagebox.showinfo('Category Status', "Category was successfully deleted!")
             modal.destroy()         # to remove the add category modal
             
-            c.destroy()
+            #c.destroy()
             viewAllCategories()
             
             rb.set(-1)
@@ -177,25 +185,36 @@ canvas.place(x=0, y=0)
 global rb
 rb = IntVar()
 rb.set(-1)
-Radiobutton(root, text='Default Tasks', variable=rb, value=-1, font=('Arial Narrow Bold', 15), fg='white', bg='#292C2E', selectcolor='#292C2E', activebackground='#292C2E', activeforeground='white', pady=10).place(x=20, y=100)
+Radiobutton(root, text='Default Tasks', variable=rb, value=-1, font=('Arial Narrow Bold', 15), fg='white', bg='#292C2E', selectcolor='#292C2E', activebackground='#292C2E', activeforeground='white', pady=10).place(x=10, y=100)
+Radiobutton(root, text='View All Tasks', variable=rb, value=0, font=('Arial Narrow Bold', 15), fg='white', bg='#292C2E', selectcolor='#292C2E', activebackground='#292C2E', activeforeground='white', pady=10).place(x=10, y=150)
 
 # labels
+title = Label(root, text='<Title>', font=('Arial Narrow Bold', 45), fg='white', bg='#3D4448')
+title.place(x=830, y=10)
+
 l_category = Label(root, text='Categories', font=('Arial Narrow Bold', 18), fg='white', bg='#292C2E')
-l_category.place(x=20, y=60)
+l_category.place(x=10, y=210)
 
-# for the name of category
-name = Label(root, font=('Arial Narrow Italic', 26), fg='white', bg='#3D4448')
-name.place(x=350, y=300)
+# category name
+name = Label(root, font=('Arial Narrow Italic', 28), fg='white', bg='#3D4448')
+name.place(x=320, y=100)
 
-# button
+# unfinished tasks label
+unfinished = Label(root, font=('Arial Narrow', 14), fg='white', bg='#3D4448')
+unfinished.place(x=845, y=168)
+
+# buttons
+b_createTask = Button(root, text='Create Task', font=('Arial Narrow Bold', 12), bg='#F46C3E')
+b_createTask.place(x=320, y=160)
+
 b_addCategory = Button(root, text='Add Category', font=('Arial Narrow Bold', 12), bg='#F46C3E', command=pop_addCategory)
-b_addCategory.place(x=700, y=100)
+b_addCategory.place(x=420, y=160)
 
-b_editCategory = Button(root, text='Edit Category', font=('Arial Narrow Bold', 12), bg='#F46C3E', command=pop_editCategory)
-b_editCategory.place(x=700, y=200)
+# b_editCategory = Button(root, text='Edit Category', font=('Arial Narrow Bold', 12), bg='#F46C3E', command=pop_editCategory)
+# b_editCategory.place(x=530, y=160)
 
-b_editCategory = Button(root, text='Delete Category', font=('Arial Narrow Bold', 12), bg='#F46C3E', command=pop_deleteCategory)
-b_editCategory.place(x=800, y=200)
+# b_delCategory = Button(root, text='Delete Category', font=('Arial Narrow Bold', 12), bg='#F46C3E', command=pop_deleteCategory)
+# b_delCategory.place(x=640, y=160)
 
 viewAllCategories()
 
