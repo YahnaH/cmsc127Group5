@@ -1,8 +1,17 @@
-Modifications:
+CMSC 127 - Group 5
 
-1.Created new dump file, tasksApp, added new users and modified userid to be names, so that they may be used as login credentials
+Yanna Denise A. Hilario
+Matther Jason Lucero
+Reinalyn Madrid
 
-2. Created a new user (for python) and grant all access privilege 
+
+If you will be using this app (provided you already downloaded the source code):
+
+1.Download the dump file for the taskapp.sql
+
+2. Login as root user
+
+3. Created a new user (for python) and grant all access privilege 
 
     ##Login as root user:
     ##CREATE USER python IDENTIFIED BY 'dbconnector';
@@ -11,9 +20,14 @@ Modifications:
     ##login as python
     ##check if dbs can be accessed
 
-3. Connect to mysql: https://www.youtube.com/watch?v=mt-5FGkw2zY
+4.Connect python to mysql
+    (a.) You can watch this link to guide you step by step on how to install the db connector
+        Connect to mysql: https://www.youtube.com/watch?v=mt-5FGkw2zY
 
-Note: no need to install anything for Tk since native naman siya sa python
+    (b.) or you can try running 'pip install mysql-connector-python' on VScode terminal
+
+
+Note: no need to install anything for Tk since it is native in python
 
 REFERENCE LIST:
 https://pythonguides.com/python-tkinter-multiple-windows-tutorial/
