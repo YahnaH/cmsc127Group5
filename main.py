@@ -264,6 +264,7 @@ def addTask(taskDict):
             messagebox.showinfo('Task Status',
                                 "New Task was successfully added!")
             modal.destroy()         # to remove the add category modal
+            clicked.set('   ')
 
             if (rb.get() == 0):
                 viewOneCategory(category_id)
@@ -309,8 +310,17 @@ def createNewDict(category, title, details, hours, mins, date):
     return newTask_Dict
 
 
-def pop_addTask():
+def getCatId_forTask(catStr):
     global category_id
+    if (catStr == ''):
+        category_id = None
+    else:
+        id = [k for k, v in catDict.items() if v == catStr][0]
+
+        category_id = id
+
+
+def pop_addTask():
     global modal
     modal = Toplevel(root, bg='#292C2E')
     modal.title('Add Task')
@@ -360,7 +370,8 @@ def pop_addTask():
 
         category_list = list(catDict.values())
 
-        addTask_Cat_Inp = OptionMenu(modal, category_id, *category_list)
+        addTask_Cat_Inp = OptionMenu(
+            modal, clicked, *category_list, command=lambda x: getCatId_forTask(x))
         addTask_Cat_Inp.place(x=200, y=35)
         addTask_Cat_Inp.config(font=('Arial Narrow Bold', 12),
                                bg='white', highlightthickness=0, width=30)
@@ -465,118 +476,142 @@ def update_taskView(rec):
 def getrow_default(event):
     rowid = default_taskList.identify_row(event.y)
     item = default_taskList.item(default_taskList.focus())
+    x = item['values'][4]
     t1.set(item['values'][0])  # id
-    t2.set(item['values'][1])  # task name
-    t3.set(item['values'][2])  # details
-    t4.set(item['values'][3])  # date
-    t5.set(item['values'][4])  # time
+    t3.set(item['values'][1])  # task name
+    t4.set(item['values'][2])  # details
+    t5.set(item['values'][3])  # date
+    t6.set(x[0:2])  # time (hrs)
+    t7.set(x[3:5])  # time (mins)
 
 
 def getrow_all(event):
     rowid = all_taskList.identify_row(event.y)
     item = all_taskList.item(all_taskList.focus())
+    x = item['values'][5]
     t1.set(item['values'][0])  # id
     t2.set(item['values'][1])  # category
     t3.set(item['values'][2])  # task name
     t4.set(item['values'][3])  # details
     t5.set(item['values'][4])  # date
-    t6.set(item['values'][5])  # time
+    t6.set(x[0:2])  # time (hrs)
+    t7.set(x[3:5])  # time (mins)
 
 
-# def editTask(dict):
-#     try:
-#         edit_Task = "UPDATE task SET title = %s, details = %s, deadlinetime = %s, deadlinedate = %s WHERE taskid = %s;"
-#         print(dict)
-#     except Error as e:
-#         print("Edit Task Error: {}".format(e))
+def editTask(dict):
+    if (dict["title"] == ''):
+        messagebox.showinfo(
+            'Task Status', "Please enter a title for the new task in the text box.")
+        modal.destroy()
+    else:
+        try:
+            edit_Task = "UPDATE task SET categoryid = %s, title = %s, details = %s, deadlinetime = %s, deadlinedate = %s WHERE taskid = %s;"
+
+            dbCursor.execute(edit_Task, (dict["category"], dict["title"],
+                             dict["details"], dict["time"], dict["date"], t1.get(),))
+            dbConnect.commit()
+
+            messagebox.showinfo('Task Status',
+                                "Task was successfully edited!")
+            modal.destroy()         # to remove the add category modal
+            clicked.set('   ')
+
+            if (rb.get() == 0):
+                viewOneCategory(category_id)
+            elif (rb.get() == 1):
+                viewNoCatTasks()
+            else:
+                viewAllTasks()
+        except Error as e:
+            print("Edit Task Error: {}".format(e))
 
 
-# def pop_editTask():
-#     global category_id
-#     global modal
-#     modal = Toplevel(root, bg='#292C2E')
-#     modal.title('Add Task')
-#     modal.geometry('500x350')
+def pop_editTask():
+    global category_id
+    global modal
+    modal = Toplevel(root, bg='#292C2E')
+    modal.title('Edit Task')
+    modal.geometry('500x350')
 
-#     # task name label
-#     editTask_Title = Label(modal, text='Task Name:', font=(
-#         'Arial Narrow Bold', 15), bg='#292C2E', fg='white')
+    # task name label
+    editTask_Title = Label(modal, text='Task Name:', font=(
+        'Arial Narrow Bold', 15), bg='#292C2E', fg='white')
 
-#     # text box
-#     editTask_Title_Inp = Entry(modal, width=35, font=(
-#         'Arial Narrow', 12), textvariable=t2)
+    # text box
+    editTask_Title_Inp = Entry(modal, width=35, font=(
+        'Arial Narrow', 12), textvariable=t3)
 
-#     # task detail label
-#     editTask_Details = Label(modal, text='Task Details:', font=(
-#         'Arial Narrow Bold', 15), bg='#292C2E', fg='white')
+    # task detail label
+    editTask_Details = Label(modal, text='Task Details:', font=(
+        'Arial Narrow Bold', 15), bg='#292C2E', fg='white')
 
-#     # text box
-#     editTask_Det_Inp = Entry(modal, width=35, font=(
-#         'Arial Narrow', 12), textvariable=t3)
+    # text box
+    editTask_Det_Inp = Entry(modal, width=35, font=(
+        'Arial Narrow', 12), textvariable=t4)
 
-#     # task deadlinetime label
-#     editTask_Time = Label(modal, text='Task Deadline (Time):', font=(
-#         'Arial Narrow Bold', 15), bg='#292C2E', fg='white')
+    # task deadlinetime label
+    editTask_Time = Label(modal, text='Task Deadline (Time):', font=(
+        'Arial Narrow Bold', 15), bg='#292C2E', fg='white')
 
-#     # spin box for hrs
-#     editTask_Time_Hrs = Spinbox(
-#         modal, from_=00, to=23, width=3, font=('Arial Narrow Bold', 15), textvariable=t5.get()[0:2])
-#     editTask_Time_Hrs.delete(0, "end")
+    # spin box for hrs
+    editTask_Time_Hrs = Spinbox(
+        modal, from_=00, to=23, width=3, font=('Arial Narrow Bold', 15), textvariable=t6)
 
-#     # spin box for min
-#     editTask_Time_Min = Spinbox(
-#         modal, from_=00, to=59, width=3, font=('Arial Narrow Bold', 15), textvariable=t5.get()[3:5])
-#     editTask_Time_Min.delete(0, "end")
+    # spin box for min
+    editTask_Time_Min = Spinbox(
+        modal, from_=00, to=59, width=3, font=('Arial Narrow Bold', 15), textvariable=t7)
 
-#     # task deadlineDate label
-#     editTask_Date = Label(modal, text='Task Deadline (Date):', font=(
-#         'Arial Narrow Bold', 15), bg='#292C2E', fg='white')
+    # task deadlineDate label
+    editTask_Date = Label(modal, text='Task Deadline (Date):', font=(
+        'Arial Narrow Bold', 15), bg='#292C2E', fg='white')
 
-#     # text box
-#     editTask_Date_Inp = DateEntry(modal, width=15, date_pattern='yyyy-mm-dd')
-#     editTask_Date_Inp.delete(0, "end")
+    # text box
+    editTask_Date_Inp = DateEntry(modal, width=15, date_pattern='yyyy-mm-dd')
+    editTask_Date_Inp.delete(0, "end")
 
-#     editTask_Date_Inp.insert(0, t4.get())
+    editTask_Date_Inp.insert(0, t5.get())
 
-#     # if 'Default Tasks' or 'View All Tasks' are selected
-#     if (rb.get() == 1 or rb.get() == 2):
-#         editTask_Cat = Label(modal, text='Category:', font=(
-#             'Arial Narrow Bold', 15), bg='#292C2E', fg='white')
-#         editTask_Cat.place(x=20, y=30)
+    # if 'Default Tasks' or 'View All Tasks' are selected
+    if (rb.get() == 1 or rb.get() == 2):
+        editTask_Cat = Label(modal, text='Category:', font=(
+            'Arial Narrow Bold', 15), bg='#292C2E', fg='white')
+        editTask_Cat.place(x=20, y=30)
 
-#         category_list = list(catDict.values())
+        category_list = list(catDict.values())
+        clicked.set(t2.get())
 
-#         editTask_Cat_Inp = OptionMenu(modal, t6, *category_list)
-#         editTask_Cat_Inp.place(x=200, y=35)
-#         editTask_Cat_Inp.config(font=('Arial Narrow Bold', 12),
-#                                 bg='white', highlightthickness=0, width=30)
+        editTask_Cat_Inp = OptionMenu(
+            modal, clicked, *category_list, command=lambda x: getCatId_forTask(x))
+        editTask_Cat_Inp.place(x=200, y=35)
+        editTask_Cat_Inp.config(font=('Arial Narrow Bold', 12),
+                                bg='white', highlightthickness=0, width=30)
 
-#         # change placements of values
-#         editTask_Title.place(x=20, y=80)
-#         editTask_Title_Inp.place(x=200, y=85)
-#         editTask_Details.place(x=20, y=130)
-#         editTask_Det_Inp.place(x=200, y=135)
-#         editTask_Time.place(x=20, y=180)
-#         editTask_Time_Hrs.place(x=200, y=183)
-#         editTask_Time_Min.place(x=250, y=183)
-#         editTask_Date.place(x=20, y=230)
-#         editTask_Date_Inp.place(x=200, y=235)
+        # change placements of values
+        editTask_Title.place(x=20, y=80)
+        editTask_Title_Inp.place(x=200, y=85)
+        editTask_Details.place(x=20, y=130)
+        editTask_Det_Inp.place(x=200, y=135)
+        editTask_Time.place(x=20, y=180)
+        editTask_Time_Hrs.place(x=200, y=183)
+        editTask_Time_Min.place(x=250, y=183)
+        editTask_Date.place(x=20, y=230)
+        editTask_Date_Inp.place(x=200, y=235)
 
-#     else:
-#         # change placements of values
-#         editTask_Title.place(x=20, y=30)
-#         editTask_Title_Inp.place(x=200, y=35)
-#         editTask_Details.place(x=20, y=80)
-#         editTask_Det_Inp.place(x=200, y=85)
-#         editTask_Time.place(x=20, y=130)
-#         editTask_Time_Hrs.place(x=200, y=133)
-#         editTask_Time_Min.place(x=250, y=133)
-#         editTask_Date.place(x=20, y=180)
-#         editTask_Date_Inp.place(x=200, y=185)
+    else:
+        # change placements of values
+        editTask_Title.place(x=20, y=30)
+        editTask_Title_Inp.place(x=200, y=35)
+        editTask_Details.place(x=20, y=80)
+        editTask_Det_Inp.place(x=200, y=85)
+        editTask_Time.place(x=20, y=130)
+        editTask_Time_Hrs.place(x=200, y=133)
+        editTask_Time_Min.place(x=250, y=133)
+        editTask_Date.place(x=20, y=180)
+        editTask_Date_Inp.place(x=200, y=185)
 
-#     b_editTask = Button(modal, text='Done', font=('Arial Narrow Bold', 13),
-#                         bg='#F46C3E', fg='white', command=lambda: editTask(createNewDict(category_id, editTask_Title_Inp, editTask_Det_Inp, editTask_Time_Hrs, editTask_Time_Min, editTask_Date_Inp)))
-#     b_editTask.pack(side=BOTTOM, pady=30)
+    b_editTask = Button(modal, text='Done', font=('Arial Narrow Bold', 13),
+                        bg='#F46C3E', fg='white', command=lambda: editTask(createNewDict(category_id, editTask_Title_Inp, editTask_Det_Inp, editTask_Time_Hrs, editTask_Time_Min, editTask_Date_Inp)))
+    b_editTask.pack(side=BOTTOM, pady=30)
 
 
 def deleteTask():
@@ -612,7 +647,7 @@ rb = IntVar()
 rb.set(1)
 clicked = StringVar()
 clicked.set('   ')
-category_id = 'None'
+category_id = None
 catDict = {}
 taskDict = {}
 t1 = StringVar()
@@ -621,6 +656,7 @@ t3 = StringVar()
 t4 = StringVar()
 t5 = StringVar()
 t6 = StringVar()
+t7 = StringVar()
 
 # canvas
 canvas = Canvas(root, width=300, height=768,
@@ -691,9 +727,9 @@ b_exit = Button(root, text='Exit', font=('Arial Narrow Bold', 13),
                 bg='#2656D3', fg='white', width=8, command=root.quit)
 b_exit.place(x=100, y=710)
 
-# b_editTask = Button(root, text='Edit Task', font=(
-#     'Arial Narrow Bold', 13), bg='#F46C3E', fg='white', command=pop_editTask)
-# b_editTask.place(x=320, y=710)
+b_editTask = Button(root, text='Edit Task', font=(
+    'Arial Narrow Bold', 13), bg='#F46C3E', fg='white', command=pop_editTask)
+b_editTask.place(x=320, y=710)
 
 b_deleteTask = Button(root, text='Delete Task', font=(
     'Arial Narrow Bold', 13), bg='#F46C3E', fg='white', command=deleteTask)
