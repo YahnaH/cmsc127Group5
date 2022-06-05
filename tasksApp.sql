@@ -22,20 +22,26 @@ INSERT INTO `user` (`userid`, `fname`, `minit`, `lname`, `email`, `userpassword`
     ('sample', 'This', 'I', 'ATest', 'testcase@up.edu.ph', 'pass567');
 
 CREATE TABLE IF NOT EXISTS `category` (
-    `userid` VARCHAR(9) NOT NULL,
-    `categoryid` INT(5) NOT NULL,
-    `categoryname` VARCHAR(20) NOT NULL,
-    `unfinishedtasks` INT(5),
+    `userid` VARCHAR(20) NOT NULL,
+    `categoryid` INT(5) AUTO_INCREMENT,
+    `categoryname` VARCHAR(30) NOT NULL,
+    `unfinishedtasks` INT(5) DEFAULT NULL,
     CONSTRAINT `category_categoryid_pk` PRIMARY KEY (`categoryid`),
     CONSTRAINT `category_userid_fk` FOREIGN KEY (`userid`) REFERENCES user (`userid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `category` (`userid`, `categoryid`, `categoryname`, `unfinishedtasks`) VALUES
-    ('012345678', 1, 'CMSC 127', NULL);
+INSERT INTO `category` (`userid`, `categoryname`, `unfinishedtasks`) VALUES
+    ('sample', 'Acads', NULL);
+INSERT INTO `category` (`userid`, `categoryname`, `unfinishedtasks`) VALUES
+    ('ydahilario', 'Household Chores', 2);
+INSERT INTO `category` (`userid`, `categoryname`, `unfinishedtasks`) VALUES
+    ('mjlucero', 'Movie Watchlist', 3);
+INSERT INTO `category` (`userid`, `categoryname`, `unfinishedtasks`) VALUES
+    ('rmadrid', 'To Buy', NULL);
 
 CREATE TABLE IF NOT EXISTS `task` (
-    `userid` VARCHAR(9) NOT NULL,
-    `categoryid` INT(5) NOT NULL,
+    `userid` VARCHAR(20) NOT NULL,
+    `categoryid` INT(5) DEFAULT NULL,
     `taskid` INT(10) NOT NULL AUTO_INCREMENT,
     `title` VARCHAR(30) NOT NULL,
     `details` VARCHAR(70) DEFAULT NULL,
@@ -47,5 +53,13 @@ CREATE TABLE IF NOT EXISTS `task` (
     CONSTRAINT `task_categoryid_fk` FOREIGN KEY (`categoryid`) REFERENCES category (`categoryid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO `task` (`userid`, `categoryid`, `taskid`, `title`, `details`, `deadlinetime`, `deadlinedate`, `isdone`) VALUES
-    ('012345678', 1, 1, 'Project Milestone 03', 'SQL Queries', '23:59:59', '2022-05-11', 0);
+INSERT INTO `task` (`userid`, `categoryid`, `title`, `details`, `deadlinetime`, `deadlinedate`) VALUES
+    ('sample', 1, 'Project Milestone 03', 'SQL Queries', '23:59:59', '2022-05-11');
+INSERT INTO `task` (`userid`, `categoryid`, `title`, `details`) VALUES
+    ('rmadrid', 4, 'Juice', '5 packs');
+INSERT INTO `task` (`userid`, `categoryid`, `title`, `deadlinedate`, `isdone`) VALUES
+    ('ydahilario', 2, 'Wash dishes', '2022-05-01', 1);
+INSERT INTO `task` (`userid`, `categoryid`, `title`) VALUES
+    ('mjlucero', 4, 'Doctor Strange');
+INSERT INTO `task` (`userid`, `title`, `details`, `deadlinedate`, `isdone`) VALUES
+    ('sample', 'Mop the floor', 'in the bedroom and living room', '2022-05-20', 1);
