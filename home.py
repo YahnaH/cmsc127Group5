@@ -20,7 +20,7 @@ dbCursor.execute("USE tasksapp")
 
 
 #properties and var init
-app_title = "APP NAME"
+app_title = "TODO.IT"
 title = "WELCOME TO " + app_title
 btnHeight = 2
 btnwidth =10
