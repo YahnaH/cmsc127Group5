@@ -266,6 +266,7 @@ def addTask(taskDict):
                                 "New Task was successfully added!")
             modal.destroy()         # to remove the add category modal
             clicked.set('   ')
+            category_id = None
 
             if (rb.get() == 0):
                 viewOneCategory(category_id)
@@ -501,7 +502,6 @@ def toggleCheck(event):
             dbCursor.execute(update_isDone, (t1.get(),))
             dbConnect.commit()
             print("Task checked.")
-
     else:
         rowid = default_taskList.identify_row(event.y)
         tag = default_taskList.item(rowid, "tags")[0]
