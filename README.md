@@ -1,7 +1,7 @@
 CMSC 127 - Group 5
 
 Yanna Denise A. Hilario
-MattheW Jason Lucero
+Matthew Jason Lucero
 Reinalyn Madrid
 
 
