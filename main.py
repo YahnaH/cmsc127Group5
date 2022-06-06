@@ -477,6 +477,9 @@ def update_taskView(rec):
 
 
 def toggleCheck(event):
+    update_isNotDone = "UPDATE task SET isdone = 0 WHERE taskid = %s;"
+    update_isDone = "UPDATE task SET isdone = 1 WHERE taskid = %s;"
+
     if (rb.get() == 2):
         rowid = all_taskList.identify_row(event.y)
         tag = all_taskList.item(rowid, "tags")[0]
@@ -489,14 +492,12 @@ def toggleCheck(event):
         if (tag == "checked"):
             all_taskList.item(rowid, tags="unchecked")
 
-            update_isNotDone = "UPDATE task SET isdone = 0 WHERE taskid = %s;"
             dbCursor.execute(update_isNotDone, (t1.get(),))
             dbCursor.commit()
             print("Task unchecked.")
         else:
             all_taskList.item(rowid, tags="checked")
 
-            update_isDone = "UPDATE task SET isdone = 1 WHERE taskid = %s;"
             dbCursor.execute(update_isDone, (t1.get(),))
             dbCursor.commit()
             print("Task checked.")
@@ -512,14 +513,12 @@ def toggleCheck(event):
         if (tag == "checked"):
             default_taskList.item(rowid, tags="unchecked")
 
-            update_isNotDone = "UPDATE task SET isdone = 0 WHERE taskid = %s;"
             dbCursor.execute(update_isNotDone, (t1.get(),))
             dbConnect.commit()
             print("Task unchecked.")
         else:
             default_taskList.item(rowid, tags="checked")
 
-            update_isDone = "UPDATE task SET isdone = 1 WHERE taskid = %s;"
             dbCursor.execute(update_isDone, (t1.get(),))
             dbConnect.commit()
             print("Task checked.")
