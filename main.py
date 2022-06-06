@@ -493,14 +493,15 @@ def toggleCheck(event):
             all_taskList.item(rowid, tags="unchecked")
 
             dbCursor.execute(update_isNotDone, (t1.get(),))
-            dbCursor.commit()
+            dbConnect.commit()
             print("Task unchecked.")
         else:
             all_taskList.item(rowid, tags="checked")
 
             dbCursor.execute(update_isDone, (t1.get(),))
-            dbCursor.commit()
+            dbConnect.commit()
             print("Task checked.")
+
     else:
         rowid = default_taskList.identify_row(event.y)
         tag = default_taskList.item(rowid, "tags")[0]
