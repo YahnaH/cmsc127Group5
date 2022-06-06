@@ -1,7 +1,7 @@
 CMSC 127 - Group 5
 
 Yanna Denise A. Hilario
-Matther Jason Lucero
+MattheW Jason Lucero
 Reinalyn Madrid
 
 
@@ -28,6 +28,15 @@ If you will be using this app (provided you already downloaded the source code):
 
 
 Note: no need to install anything for Tk since it is native in python
+
+To edit a task:
+- Double click the task/row first, then click the edit task button.
+
+To delete a task:
+- Double click the task/row first, then click the delete task button.
+
+To check or uncheck the box:
+- Click the task/row first, then right-click the checkbox.
 
 REFERENCE LIST:
 https://pythonguides.com/python-tkinter-multiple-windows-tutorial/
