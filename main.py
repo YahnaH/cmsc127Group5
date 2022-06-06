@@ -6,7 +6,7 @@ from mysql.connector import Error
 
 from tkinter import *
 from tkinter import ttk, messagebox
-from tkcalendar import DateEntry
+#from tkcalendar import DateEntry
 
 dbConnect = mariadb.connect(user="python", password='dbconnector',
                             host='localhost', port='3306', database="tasksApp")
@@ -43,7 +43,7 @@ def viewOneCategory(id):
 
             name.config(text=result[0])
             unfinished.config(text='Unfinished Tasks: ' +
-                              str(unfinishedTasks[0]))
+                            str(unfinishedTasks[0]))
             category_id = id
 
         except Error as e:
@@ -79,7 +79,7 @@ def viewAllCategories():
         category_list = list(catDict.values())
 
         menu = OptionMenu(root, clicked, *category_list,
-                          command=lambda x: getId(x))
+                        command=lambda x: getId(x))
 
         menu.place(x=43, y=255)
         # for the style of selected option from the dropdown menu
@@ -226,7 +226,7 @@ def pop_deleteCategory():
 
     # button for yes
     yes = Button(modal, text='Yes', font=('Arial Narrow Bold', 12), bg='#F46C3E',
-                 fg='white', width=5, command=lambda: deleteCategory('yes'))
+                fg='white', width=5, command=lambda: deleteCategory('yes'))
     yes.place(x=150, y=100)
 
     # button for no
@@ -363,7 +363,7 @@ def pop_addTask():
         addTask_Cat_Inp = OptionMenu(modal, category_id, *category_list)
         addTask_Cat_Inp.place(x=200, y=35)
         addTask_Cat_Inp.config(font=('Arial Narrow Bold', 12),
-                               bg='white', highlightthickness=0, width=30)
+                            bg='white', highlightthickness=0, width=30)
 
         # change placements of values
         addTask_Title.place(x=20, y=80)
@@ -389,7 +389,7 @@ def pop_addTask():
         addTask_Date_Inp.place(x=200, y=185)
 
     b_addTask = Button(modal, text='Done', font=('Arial Narrow Bold', 13),
-                       bg='#F46C3E', fg='white', command=lambda: addTask(createNewDict(category_id, addTask_Title_Inp, addTask_Det_Inp, addTask_Time_Hrs, addTask_Time_Min, addTask_Date_Inp)))
+                    bg='#F46C3E', fg='white', command=lambda: addTask(createNewDict(category_id, addTask_Title_Inp, addTask_Det_Inp, addTask_Time_Hrs, addTask_Time_Min, addTask_Date_Inp)))
     b_addTask.pack(side=BOTTOM, pady=30)
 
 
@@ -654,7 +654,7 @@ name.place(x=320, y=100)
 
 # unfinished tasks label
 unfinished = Label(root, font=('Arial Narrow Bold', 14),
-                   fg='white', bg='#3D4448')
+                fg='white', bg='#3D4448')
 unfinished.place(x=845, y=168)
 
 # list of tasks

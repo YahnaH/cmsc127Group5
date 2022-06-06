@@ -6,6 +6,7 @@ from tkinter import *
 from tkinter import messagebox    
 from functools import partial
 
+#import main
 
 #import database
 #reference: https://www.youtube.com/watch?v=oDR7k66x-AU&t=427s&ab_channel=DiscoverPython
@@ -70,6 +71,9 @@ def success():
     ##modify this to enter main app if success
     clear_window()
     successLabel = Label(root,text="SUCCESS!").place(anchor= CENTER, relx =.5,rely = .2)
+    
+    root.destroy()
+    import main
     return
 
 ##return button
@@ -161,7 +165,7 @@ def signUpFunc():
     signUpBtn = Button(root,text ="Sign up",command = signupUser,bg = loginColor,fg = "black",font=btnFont,height=btnHeight,width=btnwidth).place(anchor= CENTER, relx =.5,rely = .9)
     backBtn = Button(root,text ="Back",bg = signupColor,fg = fgColor,font=btnFont,height=btnHeight,width=btnwidth, command = back).place(anchor= CENTER, relx =.1,rely = 0.05)
     
-  
+
     return
 
 ##login function to define the objects in the screen
