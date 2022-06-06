@@ -7,6 +7,7 @@ from mysql.connector import Error
 from tkinter import *
 from tkinter import ttk, messagebox
 from tkcalendar import DateEntry
+from PIL import ImageTk, Image
 
 dbConnect = mariadb.connect(user="python", password='dbconnector',
                             host='localhost', port='3306', database="tasksApp")
@@ -437,7 +438,8 @@ def update_taskView(rec):
     default_taskList.place_forget()
 
     if (rb.get() == 2):
-        all_taskList.column("Id", stretch=0, width=35)
+        all_taskList.column("#0", stretch=0, width=65)
+        all_taskList.column("Id", stretch=0, width=30)
         all_taskList.column("Category", stretch=0, width=120)
         all_taskList.column("Task Name", stretch=0, width=140)
         all_taskList.column("Details", stretch=0, width=190)
@@ -453,24 +455,74 @@ def update_taskView(rec):
             all_taskList.delete(item)
 
         for row in rec:
-            all_taskList.insert('', 'end', values=row)
+            all_taskList.insert('', 'end', values=row, tags="unchecked")
     else:
-        default_taskList.column("Id", stretch=0, width=35)
+        default_taskList.column("#0", stretch=0, width=65)
+        default_taskList.column("Id", stretch=0, width=30)
         default_taskList.column("Task Name", stretch=0, width=190)
         default_taskList.column("Details", stretch=0, width=240)
-        default_taskList.column("Date", stretch=0, width=110)
-        default_taskList.column("Time", stretch=0, width=110)
+        default_taskList.column("Date", stretch=0, width=100)
+        default_taskList.column("Time", stretch=0, width=100)
 
         for x in default_Cols:
             default_taskList.heading(x, text=x)
             default_taskList.grid(row=0, column=0)
-            default_taskList.place(x=320, y=220)
+            default_taskList.place(x=330, y=220)
 
         for item in default_taskList.get_children():
             default_taskList.delete(item)
 
         for row in rec:
-            default_taskList.insert('', 'end', values=row)
+            default_taskList.insert('', 'end', values=row, tags="unchecked")
+
+
+def toggleCheck(event):
+    if (rb.get() == 2):
+        rowid = all_taskList.identify_row(event.y)
+        tag = all_taskList.item(rowid, "tags")[0]
+        tags = list(all_taskList.item(rowid, "tags"))
+        tags.remove(tag)
+        all_taskList.item(rowid, tags=tags)
+        item = all_taskList.item(all_taskList.focus())
+        t1.set(item['values'][0])
+
+        if (tag == "checked"):
+            all_taskList.item(rowid, tags="unchecked")
+
+            update_isNotDone = "UPDATE task SET isdone = 0 WHERE taskid = %s;"
+            dbCursor.execute(update_isNotDone, (t1.get(),))
+            dbCursor.commit()
+            print("Task unchecked.")
+        else:
+            all_taskList.item(rowid, tags="checked")
+
+            update_isDone = "UPDATE task SET isdone = 1 WHERE taskid = %s;"
+            dbCursor.execute(update_isDone, (t1.get(),))
+            dbCursor.commit()
+            print("Task checked.")
+    else:
+        rowid = default_taskList.identify_row(event.y)
+        tag = default_taskList.item(rowid, "tags")[0]
+        tags = list(default_taskList.item(rowid, "tags"))
+        tags.remove(tag)
+        default_taskList.item(rowid, tags=tags)
+        item = default_taskList.item(default_taskList.focus())
+        t1.set(item['values'][0])
+
+        if (tag == "checked"):
+            default_taskList.item(rowid, tags="unchecked")
+
+            update_isNotDone = "UPDATE task SET isdone = 0 WHERE taskid = %s;"
+            dbCursor.execute(update_isNotDone, (t1.get(),))
+            dbConnect.commit()
+            print("Task unchecked.")
+        else:
+            default_taskList.item(rowid, tags="checked")
+
+            update_isDone = "UPDATE task SET isdone = 1 WHERE taskid = %s;"
+            dbCursor.execute(update_isDone, (t1.get(),))
+            dbConnect.commit()
+            print("Task checked.")
 
 
 def getrow_default(event):
@@ -636,7 +688,7 @@ def deleteTask():
 
 # create window
 root = Tk()
-root.geometry('1024x768')  # w x h
+root.geometry('1090x768')  # w x h
 root.title('Tasks App')
 root.config(bg='#3D4448')
 
@@ -658,6 +710,9 @@ t5 = StringVar()
 t6 = StringVar()
 t7 = StringVar()
 
+im_checked = ImageTk.PhotoImage(Image.open("./checked.png"))
+im_unchecked = ImageTk.PhotoImage(Image.open("./unchecked.png"))
+
 # canvas
 canvas = Canvas(root, width=300, height=768,
                 bg='#292C2E', highlightthickness=0)
@@ -674,15 +729,10 @@ Radiobutton(root, text='All Tasks', variable=rb, value=2, font=('Arial Narrow Bo
 Radiobutton(root, text='Tasks from the Category:', variable=rb, value=0, font=('Arial Narrow Bold', 15), fg='white', bg='#292C2E',
             selectcolor='#292C2E', activebackground='#292C2E', activeforeground='white', pady=10, command=options).place(x=10, y=200)
 
-# emoticon label
-emoticon = Label(root, text='^_^', font=(
-    'Helvetica', 15), fg='white', bg='#292C2E')
-emoticon.place(x=125, y=30)
-
 # title label
 title = Label(root, text='ToDo.It', font=(
     'Arial Narrow Bold', 45), fg='#FFC107', bg='#3D4448')
-title.place(x=820, y=10)
+title.place(x=900, y=10)
 
 # category name label
 name = Label(root, font=('Arial Narrow Italic', 28), fg='white', bg='#3D4448')
@@ -691,19 +741,24 @@ name.place(x=320, y=100)
 # unfinished tasks label
 unfinished = Label(root, font=('Arial Narrow Bold', 14),
                    fg='white', bg='#3D4448')
-unfinished.place(x=845, y=168)
+unfinished.place(x=890, y=168)
 
 # list of tasks
 default_Cols = ("Id", "Task Name", "Details", "Date", "Time")
-default_taskList = ttk.Treeview(root, columns=default_Cols,
-                                show='headings', height="15")
+default_taskList = ttk.Treeview(root, columns=default_Cols, height=15)
+default_taskList.tag_configure('checked', image=im_checked)
+default_taskList.tag_configure('unchecked', image=im_unchecked)
 
 allTask_Cols = ("Id", "Category", "Task Name", "Details", "Date", "Time")
-all_taskList = ttk.Treeview(root, columns=allTask_Cols,
-                            show='headings', height="15")
+all_taskList = ttk.Treeview(root, columns=allTask_Cols, height=15)
+all_taskList.tag_configure('checked', image=im_checked)
+all_taskList.tag_configure('unchecked', image=im_unchecked)
 
-default_taskList.bind('<Double 1>', getrow_default)
-all_taskList.bind('<Double 1>', getrow_all)
+default_taskList.bind('<Double-Button-1>', getrow_default)
+all_taskList.bind('<Double-Button-1>', getrow_all)
+
+default_taskList.bind('<Button-3>', toggleCheck)
+all_taskList.bind('<Button-3>', toggleCheck)
 
 style = ttk.Style()
 style.configure("Treeview.Heading", font=('Arial Bold', 14), rowheight=30)
